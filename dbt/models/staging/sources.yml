@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: raw
+    database: BOOKSHOP
+    schema: RAW
+    tables:
+      - name: VENTES
+        identifier: VENTES
+        description: "Table des ventes brutes"
+      - name: FACTURES
+        identifier: FACTURES
+        description: "Table des factures brutes"
+      - name: BOOKS
+        identifier: BOOKS
+        description: "Table des livres"
+      - name: CUSTOMERS
+        identifier: CUSTOMERS
+        description: "Table des clients"
+      - name: CATEGORY
+        identifier: CATEGORY
+        description: "Table des catégories" 
