@@ -46,6 +46,19 @@ services:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow/airflow
       - AIRFLOW__CORE__LOAD_EXAMPLES=false
     command: db migrate
+    user: "0:0"  # Run as root for initialization
+
+  airflow-create-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow/airflow
+    command: users create --username admin --firstname admin --lastname admin --role Admin --email admin@example.com --password admin
+    user: "0:0"  # Run as root for user creation
 
   airflow-webserver:
     build:
@@ -56,10 +69,22 @@ services:
         condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
+      airflow-create-admin:
+        condition: service_completed_successfully
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow/airflow
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__WEBSERVER__SECRET_KEY=your_secret_key_here
+      - AIRFLOW__WEBSERVER__WORKERS=2
+      - AIRFLOW__WEBSERVER__WORKER_CLASS=sync
+      - AIRFLOW__WEBSERVER__ACCESS_LOGFILE=-
+      - AIRFLOW__WEBSERVER__ERROR_LOGFILE=-
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+      - AIRFLOW__WEBSERVER__BASE_URL=http://localhost:8080
+      - AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX=true
+      - AIRFLOW__WEBSERVER__AUTHENTICATE=true
+      - AIRFLOW__WEBSERVER__AUTH_BACKEND=airflow.api.auth.backend.basic_auth
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
       - SNOWFLAKE_ACCOUNT=${SNOWFLAKE_ACCOUNT}
       - SNOWFLAKE_USER=${SNOWFLAKE_USER}
       - SNOWFLAKE_PASSWORD=${SNOWFLAKE_PASSWORD}
@@ -74,6 +99,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./scripts:/opt/airflow/scripts
+      - ./dbt:/usr/app/dbt
     ports:
       - "8080:8080"
     command: webserver
@@ -82,6 +108,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    user: "50000:0"  # Use a non-root user with write permissions
+    restart: unless-stopped
 
   airflow-scheduler:
     build:
@@ -92,9 +120,14 @@ services:
         condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
+      airflow-create-admin:
+        condition: service_completed_successfully
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow/airflow
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL=30
+      - AIRFLOW__SCHEDULER__DAG_FILE_PROCESSOR_TIMEOUT=600
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
       - SNOWFLAKE_ACCOUNT=${SNOWFLAKE_ACCOUNT}
       - SNOWFLAKE_USER=${SNOWFLAKE_USER}
       - SNOWFLAKE_PASSWORD=${SNOWFLAKE_PASSWORD}
@@ -109,7 +142,15 @@ services:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./scripts:/opt/airflow/scripts
+      - ./dbt:/usr/app/dbt
     command: scheduler
+    healthcheck:
+      test: ["CMD", "airflow", "jobs", "check", "--job-type", "SchedulerJob"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    user: "50000:0"  # Use a non-root user with write permissions
+    restart: unless-stopped
 
   # DBT
   dbt:
@@ -126,6 +167,9 @@ services:
     volumes:
       - ./dbt:/usr/app/dbt
     command: tail -f /dev/null
+    env_file:
+      - .env
+    restart: unless-stopped
 
   # Application Streamlit
   streamlit:

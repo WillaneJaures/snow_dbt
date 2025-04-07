@@ -1,6 +1,7 @@
 FROM apache/airflow:2.7.1
 
 USER root
+ENV PATH="/home/airflow/dbt/bin:${PATH}"
 
 # Install system dependencies
 RUN apt-get update && \
@@ -18,4 +19,6 @@ RUN pip install --no-cache-dir 'pyarrow<10.1.0,>=10.0.1'
 RUN pip install --no-cache-dir \
     snowflake-connector-python \
     pandas \
-    psycopg2-binary 
+    psycopg2-binary
+    
+RUN pip install dbt-core dbt-postgres 
