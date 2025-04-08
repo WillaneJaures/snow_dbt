@@ -1,0 +1,69 @@
+-- Création de la base de données
+CREATE DATABASE IF NOT EXISTS BOOKSHOP;
+
+-- Utilisation de la base de données
+USE DATABASE BOOKSHOP;
+
+-- Création des schémas
+CREATE SCHEMA IF NOT EXISTS RAW;
+CREATE SCHEMA IF NOT EXISTS STAGGING;
+CREATE SCHEMA IF NOT EXISTS WAREHOUSE;
+CREATE SCHEMA IF NOT EXISTS MARTS;
+
+-- Création des tables dans le schéma RAW
+USE SCHEMA RAW;
+
+-- Table CATEGORY
+CREATE OR REPLACE TABLE category (
+    id INTEGER PRIMARY KEY,
+    intitule VARCHAR,
+    created_at TIMESTAMP
+);
+
+-- Table BOOKS
+CREATE OR REPLACE TABLE books (
+    id INTEGER PRIMARY KEY,
+    category_id INTEGER,
+    code VARCHAR,
+    intitule VARCHAR,
+    isbn_10 VARCHAR,
+    isbn_13 VARCHAR,
+    created_at TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES category(id)
+);
+
+-- Table CUSTOMERS
+CREATE OR REPLACE TABLE customers (
+    id INTEGER PRIMARY KEY,
+    code VARCHAR,
+    first_name VARCHAR,
+    last_name VARCHAR,
+    created_at TIMESTAMP
+);
+
+-- Table FACTURES
+CREATE OR REPLACE TABLE factures (
+    id INTEGER PRIMARY KEY,
+    code VARCHAR,
+    date_edit VARCHAR,
+    customers_id INTEGER,
+    qte_totale INTEGER,
+    total_amount FLOAT,
+    total_paid FLOAT,
+    created_at TIMESTAMP,
+    FOREIGN KEY (customers_id) REFERENCES customers(id)
+);
+
+-- Table VENTES
+CREATE OR REPLACE TABLE ventes (
+    id INTEGER PRIMARY KEY,
+    code VARCHAR,
+    date_edit VARCHAR,
+    factures_id INTEGER,
+    books_id INTEGER,
+    pu FLOAT,
+    qte INTEGER,
+    created_at TIMESTAMP,
+    FOREIGN KEY (books_id) REFERENCES books(id),
+    FOREIGN KEY (factures_id) REFERENCES factures(id)
+); 

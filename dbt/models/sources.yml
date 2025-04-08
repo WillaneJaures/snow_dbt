@@ -1,0 +1,127 @@
+version: 2
+
+sources:
+  - name: raw
+    database: BOOKSHOP
+    schema: RAW
+    tables:
+      - name: category
+        description: "Table des catégories de livres"
+        columns:
+          - name: id
+            description: "Identifiant unique de la catégorie"
+            tests:
+              - unique
+              - not_null
+          - name: intitule
+            description: "Nom de la catégorie"
+          - name: created_at
+            description: "Date de création de l'enregistrement"
+
+      - name: books
+        description: "Table des livres"
+        columns:
+          - name: id
+            description: "Identifiant unique du livre"
+            tests:
+              - unique
+              - not_null
+          - name: category_id
+            description: "Identifiant de la catégorie"
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'category')
+                  field: id
+          - name: code
+            description: "Code unique du livre"
+          - name: intitule
+            description: "Titre du livre"
+          - name: isbn_10
+            description: "ISBN-10 du livre"
+          - name: isbn_13
+            description: "ISBN-13 du livre"
+          - name: created_at
+            description: "Date de création de l'enregistrement"
+
+      - name: customers
+        description: "Table des clients"
+        columns:
+          - name: id
+            description: "Identifiant unique du client"
+            tests:
+              - unique
+              - not_null
+          - name: code
+            description: "Code unique du client"
+          - name: first_name
+            description: "Prénom du client"
+          - name: last_name
+            description: "Nom du client"
+          - name: created_at
+            description: "Date de création de l'enregistrement"
+
+      - name: factures
+        description: "Table des factures"
+        columns:
+          - name: id
+            description: "Identifiant unique de la facture"
+            tests:
+              - unique
+              - not_null
+          - name: code
+            description: "Code unique de la facture"
+          - name: date_edit
+            description: "Date de la facture (format YYYYMMDD)"
+            tests:
+              - not_null
+          - name: customers_id
+            description: "Identifiant du client"
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'customers')
+                  field: id
+          - name: qte_totale
+            description: "Quantité totale"
+          - name: total_amount
+            description: "Montant total"
+          - name: total_paid
+            description: "Montant payé"
+          - name: created_at
+            description: "Date de création de l'enregistrement"
+
+      - name: ventes
+        description: "Table des ventes"
+        columns:
+          - name: id
+            description: "Identifiant unique de la vente"
+            tests:
+              - unique
+              - not_null
+          - name: code
+            description: "Code unique de la vente"
+          - name: date_edit
+            description: "Date de la vente (format YYYYMMDD)"
+            tests:
+              - not_null
+          - name: factures_id
+            description: "Identifiant de la facture"
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'factures')
+                  field: id
+          - name: books_id
+            description: "Identifiant du livre"
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'books')
+                  field: id
+          - name: pu
+            description: "Prix unitaire"
+          - name: qte
+            description: "Quantité"
+          - name: created_at
+            description: "Date de création de l'enregistrement" 

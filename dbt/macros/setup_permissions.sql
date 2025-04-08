@@ -1,0 +1,27 @@
+{% macro setup_permissions() %}
+    {% set query %}
+        USE ROLE ACCOUNTADMIN;
+        
+        -- Grant permissions on database
+        GRANT ALL ON DATABASE BOOKSHOP TO ROLE ACCOUNTADMIN;
+        
+        -- Grant permissions on schemas
+        GRANT ALL ON ALL SCHEMAS IN DATABASE BOOKSHOP TO ROLE ACCOUNTADMIN;
+        GRANT ALL ON FUTURE SCHEMAS IN DATABASE BOOKSHOP TO ROLE ACCOUNTADMIN;
+        
+        -- Grant permissions on RAW schema
+        GRANT USAGE ON SCHEMA BOOKSHOP.RAW TO ROLE ACCOUNTADMIN;
+        GRANT ALL ON ALL TABLES IN SCHEMA BOOKSHOP.RAW TO ROLE ACCOUNTADMIN;
+        GRANT ALL ON FUTURE TABLES IN SCHEMA BOOKSHOP.RAW TO ROLE ACCOUNTADMIN;
+        
+        -- Grant permissions on STAGING schema
+        CREATE SCHEMA IF NOT EXISTS BOOKSHOP.STAGING;
+        GRANT USAGE ON SCHEMA BOOKSHOP.STAGING TO ROLE ACCOUNTADMIN;
+        GRANT ALL ON ALL TABLES IN SCHEMA BOOKSHOP.STAGING TO ROLE ACCOUNTADMIN;
+        GRANT ALL ON FUTURE TABLES IN SCHEMA BOOKSHOP.STAGING TO ROLE ACCOUNTADMIN;
+        
+        -- Show current grants
+        SHOW GRANTS TO ROLE ACCOUNTADMIN;
+    {% endset %}
+    {% do run_query(query) %}
+{% endmacro %} 

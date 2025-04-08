@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: stg_ventes
+    description: "Table de staging pour les ventes"
+    columns:
+      - name: vente_id
+        description: "Identifiant unique de la vente"
+        tests:
+          - unique
+          - not_null
+      - name: facture_id
+        description: "Identifiant de la facture associée"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_factures')
+              field: facture_id
+      - name: livre_id
+        description: "Identifiant du livre"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_books')
+              field: livre_id
+
+  - name: stg_factures
+    description: "Table de staging pour les factures"
+    columns:
+      - name: facture_id
+        description: "Identifiant unique de la facture"
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        description: "Identifiant du client"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: client_id
+
+  - name: stg_category
+    description: "Table des catégories"
+    columns:
+      - name: ID
+        description: "Identifiant unique de la catégorie"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_books
+    description: "Table des livres"
+    columns:
+      - name: ID
+        description: "Identifiant unique du livre"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_customers
+    description: "Table des clients"
+    columns:
+      - name: ID
+        description: "Identifiant unique du client"
+        tests:
+          - unique
+          - not_null 
