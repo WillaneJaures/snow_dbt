@@ -27,12 +27,12 @@ def load_data():
     # Ventes totales par catégorie
     sales_by_category = pd.read_sql("""
         SELECT 
-            c.intitule as category,
+            v.book_intitule as category,
             COUNT(*) as total_sales,
-            SUM(v.qte) as total_quantity,
-            SUM(v.pu * v.qte) as total_amount
-        FROM MARTS.OBT_SALES v
-        GROUP BY c.intitule
+            SUM(v.quantite) as total_quantity,
+            SUM(v.prix_unitaire * v.quantite) as total_amount
+        FROM STAGING_MARTS.OBT_SALES v
+        GROUP BY v.book_intitule
         ORDER BY total_amount DESC
     """, engine)
     
@@ -41,9 +41,9 @@ def load_data():
         SELECT 
             mois,
             COUNT(*) as total_sales,
-            SUM(qte) as total_quantity,
-            SUM(pu * qte) as total_amount
-        FROM MARTS.OBT_SALES
+            SUM(quantite) as total_quantity,
+            SUM(prix_unitaire * quantite) as total_amount
+        FROM STAGING_MARTS.OBT_SALES
         GROUP BY mois
         ORDER BY total_amount DESC
     """, engine)
@@ -53,9 +53,9 @@ def load_data():
         SELECT 
             book_intitule,
             COUNT(*) as total_sales,
-            SUM(qte) as total_quantity,
-            SUM(pu * qte) as total_amount
-        FROM MARTS.OBT_SALES
+            SUM(quantite) as total_quantity,
+            SUM(prix_unitaire * quantite) as total_amount
+        FROM STAGING_MARTS.OBT_SALES
         GROUP BY book_intitule
         ORDER BY total_amount DESC
         LIMIT 10
