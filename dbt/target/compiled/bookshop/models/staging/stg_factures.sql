@@ -1,9 +1,4 @@
-{{
-    config(
-        materialized='view',
-        schema='staging'
-    )
-}}
+
 
 SELECT
     id::INTEGER as facture_id,
@@ -14,4 +9,4 @@ SELECT
     total_paid::DECIMAL(12,2) as montant_ttc,
     TO_DATE(date_edit, 'YYYYMMDD')::DATE as date_facturation,
     created_at::TIMESTAMP as created_at
-FROM {{ source('raw', 'FACTURES') }}
+FROM BOOKSHOP.RAW.FACTURES

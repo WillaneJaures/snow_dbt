@@ -6,10 +6,10 @@
 }}
 
 SELECT
-    ID,
-    CODE,
-    FIRST_NAME,
-    LAST_NAME,
-    EMAIL,
-    CREATED_AT
+    id,
+    code,
+    first_name,
+    last_name,
+    email,
+    created_at
 FROM {{ source('raw', 'CUSTOMERS') }}

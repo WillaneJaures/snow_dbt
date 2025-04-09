@@ -1,9 +1,4 @@
-{{
-    config(
-        materialized='view',
-        schema='staging'
-    )
-}}
+
 
 SELECT
     id::INTEGER as vente_id,
@@ -14,4 +9,4 @@ SELECT
     pu::DECIMAL(10,2) as prix_unitaire,
     TO_DATE(date_edit, 'YYYYMMDD')::DATE as date_vente,
     created_at::TIMESTAMP as created_at
-FROM {{ source('raw', 'VENTES') }}
+FROM BOOKSHOP.RAW.VENTES

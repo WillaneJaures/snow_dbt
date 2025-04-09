@@ -1,9 +1,8 @@
-{{
-    config(
-        materialized='view',
-        schema='staging'
-    )
-}}
+
+  create or replace   view BOOKSHOP.STAGING_staging.stg_factures
+  
+   as (
+    
 
 SELECT
     id::INTEGER as facture_id,
@@ -14,4 +13,6 @@ SELECT
     total_paid::DECIMAL(12,2) as montant_ttc,
     TO_DATE(date_edit, 'YYYYMMDD')::DATE as date_facturation,
     created_at::TIMESTAMP as created_at
-FROM {{ source('raw', 'FACTURES') }}
+FROM BOOKSHOP.RAW.FACTURES
+  );
+

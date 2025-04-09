@@ -6,8 +6,8 @@
 }}
 
 SELECT
-    ID,
-    CODE,
-    INTITULE,
-    CREATED_AT
+    id,
+    code,
+    intitule,
+    created_at
 FROM {{ source('raw', 'CATEGORY') }}
