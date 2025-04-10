@@ -33,4 +33,4 @@ SELECT
     montant_ht,
     montant_ttc,
     created_at
-FROM BOOKSHOP.STAGING_staging.stg_factures
+FROM BOOKSHOP.STAGGING.stg_factures

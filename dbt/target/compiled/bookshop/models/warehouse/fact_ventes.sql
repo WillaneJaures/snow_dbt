@@ -33,4 +33,4 @@ SELECT
     prix_unitaire,
     quantite,
     created_at
-FROM BOOKSHOP.STAGING_staging.stg_ventes
+FROM BOOKSHOP.STAGGING.stg_ventes

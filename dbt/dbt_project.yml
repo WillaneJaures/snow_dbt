@@ -1,8 +1,8 @@
-name: 'bookshop'
-version: '1.0.0'
+name: "bookshop"
+version: "1.0.0"
 config-version: 2
 
-profile: 'bookshop'
+profile: "bookshop"
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -19,7 +19,7 @@ clean-targets:
 models:
   bookshop:
     +materialized: table
-    staging:
+    stagging:
       +schema: STAGGING
       +materialized: table
     warehouse:
@@ -32,6 +32,6 @@ models:
 vars:
   database: BOOKSHOP
   raw_schema: RAW
-  staging_schema: STAGGING
+  stagging_schema: STAGGING
   warehouse_schema: WAREHOUSE
   marts_schema: MARTS

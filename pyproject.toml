@@ -14,7 +14,8 @@ dependencies = [
     "snowflake-sqlalchemy",
     "python-dotenv (>=1.0.1)",
     "psycopg2-binary (>=2.9.9)",
-    "pyarrow (==18.0.0)"
+    "pyarrow (==18.0.0)",
+    "plotly (>=6.0.1,<7.0.0)"
 ]
 
 

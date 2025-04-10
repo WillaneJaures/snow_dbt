@@ -2,7 +2,7 @@
   
     
 
-        create or replace transient table BOOKSHOP.STAGING_WAREHOUSE.fact_ventes
+        create or replace transient table BOOKSHOP.WAREHOUSE.fact_ventes
          as
         (
 
@@ -39,7 +39,7 @@ SELECT
     prix_unitaire,
     quantite,
     created_at
-FROM BOOKSHOP.STAGING_staging.stg_ventes
+FROM BOOKSHOP.STAGGING.stg_ventes
         );
       
   
